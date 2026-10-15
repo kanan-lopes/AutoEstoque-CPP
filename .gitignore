@@ -1,0 +1,18 @@
+# Saídas de compilação
+/bin/*
+!/bin/.gitkeep
+*.o
+*.a
+*.so
+*.dll
+*.exe
+*.obj
+*.out
+# Qt Creator / sistemas de build
+build*/
+CMakeFiles/
+CMakeCache.txt
+*.user
+*.pro.user
+.vscode/
+.idea/
