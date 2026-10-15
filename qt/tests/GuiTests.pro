@@ -1,0 +1,12 @@
+QT += core gui widgets testlib
+CONFIG += c++11 testcase
+TEMPLATE = app
+TARGET = testeGuiAutoEstoque
+DESTDIR = ../../bin
+OBJECTS_DIR = ../../bin/qt_test_obj
+MOC_DIR = ../../bin/qt_test_moc
+UI_DIR = ../../bin/qt_test_ui
+SOURCES += test_gui.cpp ../mainwindow.cpp ../../src/bib.cpp
+HEADERS += ../mainwindow.hpp ../../src/bib.hpp
+FORMS += ../mainwindow.ui
+INCLUDEPATH += ../../src ..

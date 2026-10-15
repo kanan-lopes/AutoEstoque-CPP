@@ -1,0 +1,12 @@
+QT += core gui widgets
+CONFIG += c++11
+TEMPLATE = app
+TARGET = AutoEstoqueQt
+DESTDIR = ../bin
+OBJECTS_DIR = ../bin/qt_obj
+MOC_DIR = ../bin/qt_moc
+UI_DIR = ../bin/qt_ui
+SOURCES += main.cpp mainwindow.cpp ../src/bib.cpp
+HEADERS += mainwindow.hpp ../src/bib.hpp
+FORMS += mainwindow.ui
+INCLUDEPATH += ../src
