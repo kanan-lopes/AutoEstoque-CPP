@@ -1,58 +1,62 @@
-# AutoEstoque — C++ / Qt (base de desenvolvimento)
+# AutoEstoque — Sprint 03 | API C++ de Reposição de Estoque
 
-Projeto acadêmico de Engenharia de Software (UFOP), baseado no DER AutoEstoque v1.0.
+Implementação da camada de lógica de negócio com **um serviço** e **três funcionalidades**, conforme a especificação API v2:
 
-## Objetivo
-Construir progressivamente um sistema de controle de estoque para uma rede de lojas de informática. O sistema completo prevê cadastro, configuração do ponto de pedido, monitoramento de estoque, consulta entre filiais e apoio à reposição. **Este repositório inicial contém apenas a base de linha de comando e duas funções de domínio**, não a interface Qt nem o sistema completo.
+- **F01** — Consultar disponibilidade de produto em filiais próximas.
+- **F02** — Sugerir transferência entre lojas quando o produto atingir o ponto de pedido.
+- **F03** — Gerar pedido ao fornecedor se necessário, respeitando a decisão sobre transferência.
 
-## Estrutura
-```
+As integrações externas com outras lojas e fornecedores são abstraídas por `IConsultaFiliais` e `IEnvioPedidos`. A demonstração e os testes utilizam implementações simuladas, sem comunicação real de rede ou envio real de e-mail.
+
+## Organização
+
+```text
 AutoEstoque-CPP/
-├── src/       # código C++ e arquivo principal
-├── include/   # cabeçalhos públicos (reservado)
-├── bin/       # objetos e executáveis ignorados pelo Git
-├── test/      # testes de regressão em C++
-├── doc/       # DER e demais documentos (inserir somente se autorizados)
+├── bin/                       # .o, .exe e demais binários (ignorados no Git)
+├── src/
+│   ├── main.cpp               # executável de demonstração do produto
+│   ├── ServicoReposicao.hpp   # contrato da API v2
+│   ├── ServicoReposicao.cpp   # implementação da API v2
+│   ├── bib.hpp                # regras antigas de estoque (mantidas)
+│   └── bib.cpp
+├── test/
+│   ├── funcional/
+│   │   ├── main.cpp
+│   │   ├── funcional_tests.h
+│   │   └── funcional_tests.cpp
+│   └── unit/
+│       ├── main.cpp
+│       ├── unit_tests.h
+│       └── unit_tests.cpp
+├── qt/                        # mini demo Qt existente em branch separada
+├── doc/
 ├── Makefile
-├── .gitignore
-└── README.md
+└── .gitignore
 ```
 
-## Requisitos de ambiente
-- Compilador C++17 (`g++`) e `make` disponíveis no terminal.
-- No Windows, usar MSYS2/MinGW compatível com o compilador escolhido para Qt. O Makefile é propositalmente independente do Qt por enquanto; a futura aplicação gráfica exigirá ajustar o processo de build (por exemplo, CMake/Qt Creator).
+A branch da Sprint 03 não incorpora automaticamente os arquivos da branch `feat/mini-demo-qt`; os dois incrementos devem ser integrados posteriormente em `develop`.
 
-## Compilação e execução
+## Build e execução (g++ e GNU Make)
+
 ```bash
 make
 ./bin/autoestoque
+make funcional
+make unit
 make test
 make clean
 ```
-No Windows (MinGW): `bin\autoestoque.exe` e `bin\testeRegressivo.exe`.
 
-`make` compila todos os arquivos `.cpp` de `src`, gerando `.o` em `bin`. `make test` compila separadamente os testes (`test/main.cpp`) com o código de produção, sem `src/main.cpp`.
+No Windows com MinGW/MSYS2, os executáveis gerados são `bin/autoestoque.exe`, `bin/testeRegressivo.exe` e `bin/testeUnitario.exe`. Rode `make test` em um terminal com `make` e `g++` disponíveis.
 
-## Funcionalidades de demonstração TDD
-- `estoqueAtingiuPontoPedido(quantidadeAtual, pontoPedido)`: sinaliza estoque em ou abaixo do ponto de pedido.
-- `calcularQuantidadeReposicao(quantidadeAtual, estoqueMaximo)`: calcula unidades para completar o estoque máximo, nunca negativas.
+## Rastreabilidade
 
-**São funções de domínio isoladas:** não registram vendas, não monitoram automaticamente um banco de dados e não enviam pedidos. São candidatas a duas issues e futuras integrações à interface Qt.
+| Funcionalidade | Teste funcional em `funcional_tests.cpp` | Casos cobertos |
+|---|---|---|
+| F01 | `consultarDisponibilidadeFuncionalTest()` | T01–T04 |
+| F02 | `sugerirTransferenciaFuncionalTest()` | T01–T03 |
+| F03 | `gerarPedidoAoFornecedorFuncionalTest()` | T01–T06 |
 
-## Gitflow solicitado na disciplina
-- `master`: base principal aprovada;
-- `develop`: integração de funcionalidades em desenvolvimento;
-- `staging`: funcionalidades após aceite do P.O.;
-- `feat/nome-da-funcionalidade`: nasce de `develop`, recebe implementação e testes, depois é incorporada a `develop`.
+**O arquivo `test/funcional/main.cpp` chama exatamente essas três funções.** Elas reúnem 13 verificações de cenários especificados anteriormente; `test/unit/` contém nove verificações isoladas de validação, limites e parâmetros da mesma API.
 
-Workflow por issue: `sprint backlog` → `doing` → `waiting acceptance` → `done` **somente após o aceite do professor**. Não mover para `done` nem incorporar a `staging` antes da avaliação.
-
-Consulte `doc/GUIA_GITFLOW.md` para o roteiro de publicação, branches e evidências.
-
-## Critérios de aceite das funções iniciais
-- Verificar o ponto de pedido exatamente no limite, abaixo e acima.
-- Calcular reposição quando o estoque está abaixo, igual ou acima do máximo.
-- `make test` deve encerrar sem erros.
-
-## Situação
-Base local demonstrável; publicação no GitHub, histórico real TDD, configuração de board e aceite do P.O. pendentes. A simples presença do código e dos testes **não comprova** que o processo TDD e as movimentações de issue foram realizados.
+Os três executáveis têm cada um seu próprio `main.cpp`, sem conflito na compilação.

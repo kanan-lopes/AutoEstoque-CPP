@@ -1,47 +1,52 @@
+# AutoEstoque - Sprint 03: produto, testes funcionais e testes unitarios
 CXX ?= g++
+CPPFLAGS ?= -Isrc
 CXXFLAGS ?= -std=c++17 -Wall -Wextra -Wpedantic -O2
-CPPFLAGS ?= -Isrc -Iinclude
-DEPFLAGS := -MMD -MP
 BIN := bin
-TARGET := $(BIN)/autoestoque
-TEST_TARGET := $(BIN)/testeRegressivo
-SOURCES := $(wildcard src/*.cpp)
-APP_OBJECTS := $(patsubst src/%.cpp,$(BIN)/%.o,$(SOURCES))
-LIB_SOURCES := $(filter-out src/main.cpp,$(SOURCES))
-LIB_OBJECTS := $(patsubst src/%.cpp,$(BIN)/%.o,$(LIB_SOURCES))
-TEST_SOURCES := $(wildcard test/*.cpp)
-TEST_OBJECTS := $(patsubst test/%.cpp,$(BIN)/test_%.o,$(TEST_SOURCES))
 
 ifeq ($(OS),Windows_NT)
 EXE := .exe
-RM_BIN := cmd /C del /Q
 else
 EXE :=
-RM_BIN := rm -f
 endif
 
--include $(APP_OBJECTS:.o=.d) $(TEST_OBJECTS:.o=.d)
+FONTES_NEGOCIO := $(filter-out src/main.cpp,$(wildcard src/*.cpp))
+OBJ_NEGOCIO := $(patsubst src/%.cpp,$(BIN)/%.o,$(FONTES_NEGOCIO))
+OBJ_PRODUTO := $(BIN)/main.o $(OBJ_NEGOCIO)
+OBJ_FUNCIONAL := $(BIN)/funcional_main.o $(BIN)/funcional_funcional_tests.o $(OBJ_NEGOCIO)
+OBJ_UNIT := $(BIN)/unit_main.o $(BIN)/unit_unit_tests.o $(OBJ_NEGOCIO)
 
-.PHONY: all test clean
-all: $(TARGET)$(EXE)
+.PHONY: all test funcional unit clean
+all: $(BIN)/autoestoque$(EXE)
 
 $(BIN):
 	mkdir -p $(BIN)
 
 $(BIN)/%.o: src/%.cpp | $(BIN)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-$(BIN)/test_%.o: test/%.cpp | $(BIN)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
+$(BIN)/funcional_%.o: test/funcional/%.cpp | $(BIN)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-$(TARGET)$(EXE): $(APP_OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+$(BIN)/unit_%.o: test/unit/%.cpp | $(BIN)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-$(TEST_TARGET)$(EXE): $(LIB_OBJECTS) $(TEST_OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+$(BIN)/autoestoque$(EXE): $(OBJ_PRODUTO)
+	$(CXX) $^ -o $@
 
-test: $(TEST_TARGET)$(EXE)
-	./$(TEST_TARGET)$(EXE)
+$(BIN)/testeRegressivo$(EXE): $(OBJ_FUNCIONAL)
+	$(CXX) $^ -o $@
+
+$(BIN)/testeUnitario$(EXE): $(OBJ_UNIT)
+	$(CXX) $^ -o $@
+
+funcional: $(BIN)/testeRegressivo$(EXE)
+	./$(BIN)/testeRegressivo$(EXE)
+
+unit: $(BIN)/testeUnitario$(EXE)
+	./$(BIN)/testeUnitario$(EXE)
+
+test: funcional unit
 
 clean:
-	$(RM_BIN) $(BIN)/*.o $(BIN)/*.d $(TARGET)$(EXE) $(TEST_TARGET)$(EXE)
+	rm -f $(BIN)/*.o $(BIN)/*.exe $(BIN)/autoestoque $(BIN)/testeRegressivo $(BIN)/testeUnitario

@@ -1,4 +1,4 @@
-# Saídas de compilação
+# Build - nenhum binario ou objeto deve ser versionado
 /bin/*
 !/bin/.gitkeep
 *.o
@@ -8,7 +8,7 @@
 *.exe
 *.obj
 *.out
-# Qt Creator / sistemas de build
+# Qt Creator / builds
 build*/
 CMakeFiles/
 CMakeCache.txt
