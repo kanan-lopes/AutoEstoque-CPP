@@ -26,17 +26,21 @@ bool ServicoReposicao::produtoValido(const Produto& p) const {
 std::vector<OfertaFilial>
 ServicoReposicao::consultarDisponibilidade(const Produto& produto) const {
     if (!produtoValido(produto)) return {};
+
     std::vector<OfertaFilial> ofertas;
     for (const auto& oferta : consulta_.consultar(produto.sku)) {
-        if (oferta.distanciaKm >= 0 && oferta.distanciaKm <= configuracao_.distanciaMaxKm &&
+        if (oferta.distanciaKm >= 0 &&
+            oferta.distanciaKm <= configuracao_.distanciaMaxKm &&
             oferta.quantidade >= configuracao_.quantidadeRazoavel) {
             ofertas.push_back(oferta);
         }
     }
+
     std::sort(ofertas.begin(), ofertas.end(), [](const auto& a, const auto& b) {
         if (a.distanciaKm != b.distanciaKm) return a.distanciaKm < b.distanciaKm;
         return a.lojaId < b.lojaId;
     });
+
     return ofertas;
 }
 
@@ -45,15 +49,17 @@ ServicoReposicao::sugerirTransferencia(const Produto& produto) const {
     if (!produtoValido(produto) || produto.quantidadeAtual > produto.pontoPedido) {
         return {false, "", 0};
     }
+
     const auto ofertas = consultarDisponibilidade(produto);
     if (ofertas.empty()) return {false, "", 0};
+
     return {true, ofertas.front().lojaId, ofertas.front().quantidade};
 }
 
 ResultadoPedido
 ServicoReposicao::gerarPedidoAoFornecedor(const Produto& produto,
-                                           const std::string& lojaSolicitante,
-                                           bool transferenciaRecusada) {
+                                          const std::string& lojaSolicitante,
+                                          bool transferenciaRecusada) {
     if (!produtoValido(produto) || lojaSolicitante.empty()) {
         return {StatusPedido::DadosInvalidos, 0};
     }
@@ -63,10 +69,13 @@ ServicoReposicao::gerarPedidoAoFornecedor(const Produto& produto,
     if (sugerirTransferencia(produto).disponivel && !transferenciaRecusada) {
         return {StatusPedido::AguardandoDecisao, 0};
     }
+
     const int quantidade = produto.estoqueMaximo - produto.quantidadeAtual;
     if (quantidade <= 0) return {StatusPedido::DadosInvalidos, 0};
+
     const Pedido pedido{produto.sku, produto.fornecedorId, lojaSolicitante, quantidade};
     if (!envio_.enviar(pedido)) return {StatusPedido::FalhaEnvio, quantidade};
+
     return {StatusPedido::Gerado, quantidade};
 }
 
