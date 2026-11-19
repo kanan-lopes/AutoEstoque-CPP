@@ -1,4 +1,4 @@
-#include "ServicoReposicao.hpp"
+#include "IServicoReposicao.hpp"
 
 #include <iostream>
 #include <string>
@@ -26,17 +26,19 @@ public:
 int main() {
     ConsultaDemonstracao consulta;
     EnvioDemonstracao envio;
-    ServicoReposicao servico(consulta, envio, ConfiguracaoReposicao{10.0, 3});
+
+    // Instanciação via Factory Method e manipulação exclusiva pela interface IServicoReposicao
+    auto servico = IServicoReposicao::criar(consulta, envio, ConfiguracaoReposicao{10.0, 3});
     const Produto produto{"SSD480", "FORN01", 5, 5, 20};
 
-    const auto ofertas = servico.consultarDisponibilidade(produto);
+    const auto ofertas = servico->consultarDisponibilidade(produto);
     std::cout << "F01: ofertas elegiveis = " << ofertas.size() << '\n';
 
-    const auto sugestao = servico.sugerirTransferencia(produto);
+    const auto sugestao = servico->sugerirTransferencia(produto);
     std::cout << "F02: transferencia = "
               << (sugestao.disponivel ? sugestao.lojaId : "indisponivel") << '\n';
 
-    const auto resultado = servico.gerarPedidoAoFornecedor(produto, "MATRIZ", false);
+    const auto resultado = servico->gerarPedidoAoFornecedor(produto, "MATRIZ", false);
     std::cout << "F03: status = "
               << (resultado.status == StatusPedido::AguardandoDecisao
                       ? "aguardando decisao" : "outro status") << '\n';
