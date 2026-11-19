@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow">
+  <property name="windowTitle">
+   <string>AutoEstoque | Painel de Reposição</string>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>860</width>
+    <height>720</height>
+   </size>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="titulo">
+     <property name="text">
+      <string>AutoEstoque  |  Painel de Reposição</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="subtitulo">
+     <property name="text">
+      <string>Serviço de Reposição de Estoque  •  Integração com API v2 em C++17</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grupoProduto">
+     <property name="title">
+      <string>Produto e parâmetros de reposição</string>
+     </property>
+     <layout class="QVBoxLayout" name="layoutProduto">
+      <item>
+       <layout class="QGridLayout" name="gradeProduto">
+        <item row="0" column="0">
+         <widget class="QLabel" name="rotulo_sku">
+          <property name="text">
+           <string>SKU</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="sku">
+          <property name="text">
+           <string>SSD480</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="rotulo_fornecedorId">
+          <property name="text">
+           <string>Fornecedor</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="fornecedorId">
+          <property name="text">
+           <string>FORN01</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLabel" name="rotulo_lojaSolicitante">
+          <property name="text">
+           <string>Loja solicitante</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QLineEdit" name="lojaSolicitante">
+          <property name="text">
+           <string>MATRIZ</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="rotulo_quantidade">
+          <property name="text">
+           <string>Estoque atual</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="quantidade">
+          <property name="value">
+           <number>5</number>
+          </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="rotulo_pontoPedido">
+          <property name="text">
+           <string>Ponto de pedido</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QSpinBox" name="pontoPedido">
+          <property name="value">
+           <number>5</number>
+          </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QLabel" name="rotulo_estoqueMaximo">
+          <property name="text">
+           <string>Estoque máximo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5">
+         <widget class="QSpinBox" name="estoqueMaximo">
+          <property name="value">
+           <number>20</number>
+          </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="rotulo_raioMaximo">
+          <property name="text">
+           <string>Raio máximo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="raioMaximo">
+          <property name="value">
+           <double>10.000000</double>
+          </property>
+          <property name="maximum">
+           <double>1000.000000</double>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="suffix">
+           <string> km</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="rotulo_quantidadeMinima">
+          <property name="text">
+           <string>Quantidade mínima</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QSpinBox" name="quantidadeMinima">
+          <property name="value">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <widget class="QPushButton" name="botaoVender">
+          <property name="text">
+           <string>Simular venda (-1)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QPushButton" name="botaoRestaurar">
+          <property name="text">
+           <string>Restaurar exemplo</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="statusEstoque">
+        <property name="text">
+         <string>Situação do estoque</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grupoConsulta">
+     <property name="title">
+      <string>F01 — Consultar estoque em loja próxima</string>
+     </property>
+     <layout class="QVBoxLayout" name="layoutConsulta">
+      <item>
+       <layout class="QHBoxLayout" name="linhaConsulta">
+        <item>
+         <widget class="QPushButton" name="botaoConsultarFiliais">
+          <property name="text">
+           <string>Consultar filiais elegíveis</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelConsulta">
+          <property name="text">
+           <string>Consulta ainda não executada.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tabelaFiliais">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>115</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grupoSugestao">
+     <property name="title">
+      <string>F02 — Exibir sugestão de transferência</string>
+     </property>
+     <layout class="QVBoxLayout" name="layoutSugestao">
+      <item>
+       <layout class="QHBoxLayout" name="linhaSugestao">
+        <item>
+         <widget class="QPushButton" name="botaoSugerirTransferencia">
+          <property name="text">
+           <string>Obter sugestão</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelSugestao">
+          <property name="text">
+           <string>Sugestão ainda não solicitada.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grupoPedido">
+     <property name="title">
+      <string>F03 — Gerar pedido ao fornecedor</string>
+     </property>
+     <layout class="QVBoxLayout" name="layoutPedido">
+      <item>
+       <layout class="QHBoxLayout" name="linhaPedido">
+        <item>
+         <widget class="QCheckBox" name="checkRecusarTransferencia">
+          <property name="text">
+           <string>Transferência sugerida foi recusada</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="botaoGerarPedido">
+          <property name="text">
+           <string>Gerar pedido (simulado)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelPedido">
+        <property name="text">
+         <string>Pedido ainda não solicitado.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="avisoDemo">
+     <property name="text">
+      <string>Demonstração local: consultas às filiais e envio ao fornecedor são simulados. Não há transferência física nem compra real.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources />
+ <connections />
+</ui>

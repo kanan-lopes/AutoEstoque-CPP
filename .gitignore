@@ -1,18 +1,26 @@
-# Build - nenhum binario ou objeto deve ser versionado
+# Binarios e objetos gerados pela compilacao.
 /bin/*
 !/bin/.gitkeep
 *.o
+*.obj
 *.a
+*.lib
 *.so
 *.dll
 *.exe
-*.obj
 *.out
-# Qt Creator / builds
+# Qt Creator / qmake / CMake e build shadow.
 build*/
-CMakeFiles/
-CMakeCache.txt
+**/build*/
 *.user
 *.pro.user
+.qmake.stash
+qt/Makefile*
+qt/tests/Makefile*
+**/moc_*.cpp
+**/ui_*.h
+**/*.moc
+CMakeFiles/
+CMakeCache.txt
 .vscode/
 .idea/
