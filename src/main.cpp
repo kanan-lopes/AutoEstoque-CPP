@@ -6,7 +6,6 @@
 
 using namespace autoestoque;
 
-// Demonstracao local: as integracoes externas sao simuladas.
 class ConsultaDemonstracao final : public IConsultaFiliais {
 public:
     std::vector<OfertaFilial> consultar(const std::string&) const override {
@@ -30,18 +29,13 @@ int main() {
     ServicoReposicao servico(consulta, envio, ConfiguracaoReposicao{10.0, 3});
     const Produto produto{"SSD480", "FORN01", 5, 5, 20};
 
-    std::cout << "AutoEstoque - Sprint 03 (API de Reposicao)\n";
-
-    // F01 - Consulta de ofertas validas nas filiais proximas.
     const auto ofertas = servico.consultarDisponibilidade(produto);
     std::cout << "F01: ofertas elegiveis = " << ofertas.size() << '\n';
 
-    // F02 - Sugestao de transferencia.
     const auto sugestao = servico.sugerirTransferencia(produto);
     std::cout << "F02: transferencia = "
               << (sugestao.disponivel ? sugestao.lojaId : "indisponivel") << '\n';
 
-    // F03 - Sem recusa, deve aguardar decisao do operador.
     const auto resultado = servico.gerarPedidoAoFornecedor(produto, "MATRIZ", false);
     std::cout << "F03: status = "
               << (resultado.status == StatusPedido::AguardandoDecisao
