@@ -1,30 +1,42 @@
-#include "ServicoReposicao.hpp"
+#include "ServicoReposicaoImpl.hpp"
 
 #include <algorithm>
 #include <stdexcept>
 
 namespace autoestoque {
 
-ServicoReposicao::ServicoReposicao(IConsultaFiliais& consulta, IEnvioPedidos& envio,
-                                   double distanciaMaxKm, int quantidadeRazoavel)
-    : ServicoReposicao(consulta, envio, ConfiguracaoReposicao{distanciaMaxKm, quantidadeRazoavel}) {}
+std::unique_ptr<IServicoReposicao>
+IServicoReposicao::criar(IConsultaFiliais& consulta, IEnvioPedidos& envio,
+                         double distanciaMaxKm, int quantidadeRazoavel) {
+    return std::make_unique<ServicoReposicaoImpl>(consulta, envio, distanciaMaxKm, quantidadeRazoavel);
+}
 
-ServicoReposicao::ServicoReposicao(IConsultaFiliais& consulta, IEnvioPedidos& envio,
-                                   ConfiguracaoReposicao configuracao)
+std::unique_ptr<IServicoReposicao>
+IServicoReposicao::criar(IConsultaFiliais& consulta, IEnvioPedidos& envio,
+                         ConfiguracaoReposicao configuracao) {
+    return std::make_unique<ServicoReposicaoImpl>(consulta, envio, configuracao);
+}
+
+ServicoReposicaoImpl::ServicoReposicaoImpl(IConsultaFiliais& consulta, IEnvioPedidos& envio,
+                                           double distanciaMaxKm, int quantidadeRazoavel)
+    : ServicoReposicaoImpl(consulta, envio, ConfiguracaoReposicao{distanciaMaxKm, quantidadeRazoavel}) {}
+
+ServicoReposicaoImpl::ServicoReposicaoImpl(IConsultaFiliais& consulta, IEnvioPedidos& envio,
+                                           ConfiguracaoReposicao configuracao)
     : consulta_(consulta), envio_(envio), configuracao_(configuracao) {
     if (configuracao_.distanciaMaxKm < 0 || configuracao_.quantidadeRazoavel <= 0) {
         throw std::invalid_argument("Parâmetros de reposição inválidos");
     }
 }
 
-bool ServicoReposicao::produtoValido(const Produto& p) const {
+bool ServicoReposicaoImpl::produtoValido(const Produto& p) const {
     return !p.sku.empty() && !p.fornecedorId.empty() &&
            p.quantidadeAtual >= 0 && p.pontoPedido >= 0 &&
            p.estoqueMaximo >= p.pontoPedido;
 }
 
 std::vector<OfertaFilial>
-ServicoReposicao::consultarDisponibilidade(const Produto& produto) const {
+ServicoReposicaoImpl::consultarDisponibilidade(const Produto& produto) const {
     if (!produtoValido(produto)) return {};
 
     std::vector<OfertaFilial> ofertas;
@@ -45,7 +57,7 @@ ServicoReposicao::consultarDisponibilidade(const Produto& produto) const {
 }
 
 SugestaoTransferencia
-ServicoReposicao::sugerirTransferencia(const Produto& produto) const {
+ServicoReposicaoImpl::sugerirTransferencia(const Produto& produto) const {
     if (!produtoValido(produto) || produto.quantidadeAtual > produto.pontoPedido) {
         return {false, "", 0};
     }
@@ -57,9 +69,9 @@ ServicoReposicao::sugerirTransferencia(const Produto& produto) const {
 }
 
 ResultadoPedido
-ServicoReposicao::gerarPedidoAoFornecedor(const Produto& produto,
-                                          const std::string& lojaSolicitante,
-                                          bool transferenciaRecusada) {
+ServicoReposicaoImpl::gerarPedidoAoFornecedor(const Produto& produto,
+                                              const std::string& lojaSolicitante,
+                                              bool transferenciaRecusada) {
     if (!produtoValido(produto) || lojaSolicitante.empty()) {
         return {StatusPedido::DadosInvalidos, 0};
     }
